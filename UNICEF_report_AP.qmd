@@ -7,10 +7,8 @@ format:
     code-fold: true
     theme: sandstone
 execute:
-  echo: true
-  warning: true
-  message: true
   error: true
+  engine: python
 ---
 
 
@@ -27,9 +25,9 @@ execute:
 
 ## Report Objective
 
-This report aims to raise awareness about the tragic reality of child deaths caused by diarrhoea in children under five. Although diarrhoea is a preventable and treatable condition, it remains one of the leading causes of child mortality in many low-income countries, where access to healthcare is limited. According to 2021 data from UNICEF, diarrhoea caused 9% of all deaths in children under five, with more than 1,200 deaths per day, amounting to approximately 440,000 deaths annually.
+<p style="font-size: 16px;"> This report aims to raise awareness about the tragic reality of child **deaths** caused **by diarrhoea** in **children under five**. Although **_preventable and treatable condition_**, it remains one of the **_leading causes of child mortality in many low-income countries_**, where access to healthcare is limited.
 
-The narrative voice of this report is that of Najir, a 4-year-old child who tells his story: from when he tells his mother he has a stomach ache, to when, despite efforts to find a cure, he sadly does not survive. Although this is a fictional story, it is plausible enough to reflect what happens in countries with low access to diarrhoea care, where the inadequacy of healthcare resources is tied to economic and social inequalities.
+The narrative voice of this report is that of **Najir**, a **_4-year-old child who tells his story_**: from when he tells his mother he has a stomach ache, to when, despite efforts to find a cure, he sadly does not survive. Although this is a fictional story, it is plausible enough to reflect what happens in *countries with low access to diarrhoea care*, where the inadequacy of healthcare resources is tied to economic and social inequalities.
 
 ---
 
@@ -48,9 +46,92 @@ Please find the Tableau version of this report [here](https://public.tableau.com
 
 ## Najir's Story
 
-![Najir's Image](Najir.png)
+![This is me](Najir.png)
 
 **My name is Najir, and I am four years old.**
 
 I do not feel well. A sharp pain grips my stomach, and my mother tells me I have diarrhoea. She holds my hand tightly, her face etched with worry, her eyes filled with silent fear. ***"We must find help,"*** she says. **However, seeking medical care is not a simple task.**
 
+
+<p style="font-size: 16px;"> I live in one of the nineteen countries where, according to data collected **between 2017 and 2023**, among all the *children under the age of five suffering from diarrhoea*, **fewer than 40% have access** to _medical advice or treatment_ at a healthcare facility or from a trained provider.
+
+```{python}
+import pandas as pd
+from plotnine import ggplot, aes, geom_bar, labs, theme_minimal, theme, element_text, scale_fill_gradient
+
+df = pd.read_excel("unicef_indicator_1_filtered_firstgraph.xlsx")
+
+bar_chart = (
+    ggplot(df, aes(x='country', y='access to care for diarrhoea', fill='access to care for diarrhoea')) 
+    + geom_bar(stat='identity', show_legend=False, width=0.2)  
+    + scale_fill_gradient(low='#D5006D', high='#FF80AB') 
+    + labs(
+        title='Healthcare access for children with diarrhoea in lowest-access countries', 
+        x='Country', 
+        y='Access to Care for Diarrhoea (%)'
+    ) 
+    + theme_minimal() 
+    + theme(
+        axis_text_x=element_text(rotation=45, ha='right'),  
+        figure_size=(10, 5), 
+        plot_title=element_text(size=14, weight='bold'), 
+        axis_title=element_text(size=12)        
+    )
+)
+
+# Show the chart
+bar_chart
+```
+
+<p style="font-size: 16px;"> A serious public health crisis is evident: the *limited accessibility and availability of essential healthcare services* in specific areas of the world.
+
+Despite being a preventable and treatable condition, **_diarrhoea remains one of the leading causes of child mortality_** in countries where healthcare systems are fragile.
+According to the **_2021_** data, diarrhoea accounted for 9% of all deaths in children under 5 — over 1,200 daily, or 440,000 annually.
+
+Mortality is highest in **_Sub-Saharan Africa_**.
+
+
+```{python}
+import pandas as pd
+import plotly.express as px
+
+# Carica il dataset
+df = pd.read_csv("unicef_indicator_2 (2).csv")
+
+# Filtra i dati per l'anno 2022 e unità di misura in %
+df_2021 = df[
+    (df["time_period"] == 2021) &
+    (df["unit_of_measure"] == "%")
+]
+
+# Crea una colonna formattata per l'hover
+df_2021["% Water Access"] = df_2021["obs_value"].apply(lambda x: f"{x:.1f}%")
+
+# Crea la mappa
+fig = px.choropleth(
+    df_2021,
+    locations="alpha_3_code",
+    color="obs_value",
+    hover_name="country",
+    hover_data={
+        "alpha_3_code": False,
+        "obs_value": False,
+        "% Water Access": True
+    },
+    color_continuous_scale="Blues",
+    title="<b>Health care facilities & water access: country comparison 2021</b>"
+)
+
+fig.update_layout(
+    coloraxis_colorbar=dict(
+        title="Access (%)",
+        tickformat=".1f"
+    )
+)
+
+fig.show()
+```
+
+```{python}
+import warnings
+warnings.simplefilter(action='ignore', category=pd.errors.SettingWithCopyWarning)
