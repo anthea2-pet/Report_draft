@@ -1,0 +1,38 @@
+---
+title: "Untitled"
+format: html
+---
+
+---
+title: "UNICEF Report"
+format: html
+---
+
+# Accesso alle cure per la diarrea
+
+```{python}
+import pandas as pd
+from plotnine import *
+import matplotlib.pyplot as plt
+
+# Caricamento del file Excel (assicurati che il file sia nella stessa cartella del .qmd)
+df = pd.read_excel("unicef_indicator_1_filtered_firstgraph.xlsx")
+
+# Creazione del grafico
+bar_chart = (ggplot(df, aes(x='country', y='access to care for diarrhoea', fill='country')) +
+             geom_bar(stat='identity', show_legend=False) +
+             labs(title='Percentage of Children Under 5 With Diarrhoea Who Are Taken to a Health Facility',
+                  x='Country', y='Percentage (%)') +
+             theme_minimal() +
+             theme(axis_text_x=element_text(rotation=45, ha='right'),
+                   figure_size=(10, 5),
+                   plot_title=element_text(size=14, weight='bold'),
+                   axis_title=element_text(size=12)))
+
+
+## Bar Chart: Access to Health Care for Diarrhoea
+
+![Bar chart](output.png)
+
+quarto render report.qmd
+
