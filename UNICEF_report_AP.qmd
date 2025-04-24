@@ -1,38 +1,56 @@
 ---
-title: "Untitled"
-format: html
+title: "UNICEF REPORT"
+subtitle: "*When Hope Fades:* **_The Story of Najir_**"
+format:
+  html:
+    embed-resources: true
+    code-fold: true
+    theme: sandstone
+execute:
+  echo: true
+  warning: true
+  message: true
+  error: true
 ---
 
+
+**Author**: Anthea Petrillo                      
+**Published**: April 27, 2025
+
 ---
-title: "UNICEF Report"
-format: html
+
+<div style="text-align: center;">
+  <img src="Uniceflogo.png" width="200px">
+</div>
+
 ---
 
-# Accesso alle cure per la diarrea
+## Report Objective
 
-```{python}
-import pandas as pd
-from plotnine import *
-import matplotlib.pyplot as plt
+This report aims to raise awareness about the tragic reality of child deaths caused by diarrhoea in children under five. Although diarrhoea is a preventable and treatable condition, it remains one of the leading causes of child mortality in many low-income countries, where access to healthcare is limited. According to 2021 data from UNICEF, diarrhoea caused 9% of all deaths in children under five, with more than 1,200 deaths per day, amounting to approximately 440,000 deaths annually.
 
-# Caricamento del file Excel (assicurati che il file sia nella stessa cartella del .qmd)
-df = pd.read_excel("unicef_indicator_1_filtered_firstgraph.xlsx")
+The narrative voice of this report is that of Najir, a 4-year-old child who tells his story: from when he tells his mother he has a stomach ache, to when, despite efforts to find a cure, he sadly does not survive. Although this is a fictional story, it is plausible enough to reflect what happens in countries with low access to diarrhoea care, where the inadequacy of healthcare resources is tied to economic and social inequalities.
 
-# Creazione del grafico
-bar_chart = (ggplot(df, aes(x='country', y='access to care for diarrhoea', fill='country')) +
-             geom_bar(stat='identity', show_legend=False) +
-             labs(title='Percentage of Children Under 5 With Diarrhoea Who Are Taken to a Health Facility',
-                  x='Country', y='Percentage (%)') +
-             theme_minimal() +
-             theme(axis_text_x=element_text(rotation=45, ha='right'),
-                   figure_size=(10, 5),
-                   plot_title=element_text(size=14, weight='bold'),
-                   axis_title=element_text(size=12)))
+---
 
+## Data Sources
 
-## Bar Chart: Access to Health Care for Diarrhoea
+The data used in this report comes from the following datasets:
 
-![Bar chart](output.png)
+1. **unicef_indicator_1.csv**: provides global data on the percentage of children under five with diarrhoea who can access healthcare facilities
+2. **unicef_indicator_2.csv**: offers global data on the percentage of healthcare facilities with basic water access
+3. **unicef_metadata.csv**: includes economic and social data
+4. **deaths_caused_by_diarrhoea.csv**: provides data on diarrhoea-related child mortality categorized by seven regions. You can download it [here](https://data.unicef.org/topic/child-health/diarrhoeal-disease/#data).
 
-quarto render report.qmd
+Please find the Tableau version of this report [here](https://public.tableau.com/app/profile/anthea.petrillo/viz/ThestoryofNajir_/Dashboard32).
+
+---
+
+## Najir's Story
+
+![Najir's Image](Najir.png)
+
+**My name is Najir, and I am four years old.**
+
+I do not feel well. A sharp pain grips my stomach, and my mother tells me I have diarrhoea. She holds my hand tightly, her face etched with worry, her eyes filled with silent fear. ***"We must find help,"*** she says. **However, seeking medical care is not a simple task.**
 
