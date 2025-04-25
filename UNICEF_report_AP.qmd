@@ -176,42 +176,61 @@ grafico = (
 grafico
 ```
 
+
 ```{python}
 import pandas as pd
-from plotnine import ggplot, aes, geom_line, labs, theme_minimal, theme, element_text
+from plotnine import ggplot, aes, geom_line, labs, theme_minimal, theme, element_text, scale_color_manual
 
 # Carica i dati
 df = pd.read_csv("unicef_metadata_7.csv")
 
-# Lista dei paesi da includere
-paesi = [
-    "Malaysia", "Vietnam", "Peru", "Yemen", "Benin", "Chad", "Togo", "Comoros", "Bangladesh",
-    "Nigeria", "Haiti", "Central African Republic", "Tunisia", "Zimbabwe", "Ghana", "Morocco",
-    "Lesotho", "Madagascar", "Papua New Guinea"
-]
+# Definisci i gruppi di paesi
+high_birth = ["Niger", "Chad", "Somalia", "Central African Republic", "Mali",
+              "Congo", "Nigeria", "Uganda", "Mozambique", "Benin"]
+low_birth = ["South Korea", "Hong Kong", "Puerto Rico", "Japan", "Andorra", 
+             "San Marino", "Italy", "China", "Spain", "Greece"]
 
-# Filtra i dati
-df_filtered = df[df["country"].isin(paesi)]
+# Assegna etichette personalizzate
+df["group"] = df["country"].apply(
+    lambda x: "Top 10 High Birth Rate Countries" if x in high_birth else (
+              "Top 10 Low Birth Rate Countries" if x in low_birth else None)
+)
 
-# Rimuove righe con valori nulli
-df_filtered = df_filtered.dropna(subset=["Birth rate, crude (per 1,000 people)"])
+# Filtra solo i gruppi rilevanti
+df_grouped = df[df["group"].notna()]
 
-# Calcola media del birth rate per anno
-media_annuale = df_filtered.groupby("year")["Birth rate, crude (per 1,000 people)"].mean().reset_index()
+# Elimina righe con valori nulli
+df_grouped = df_grouped.dropna(subset=["Birth rate, crude (per 1,000 people)"])
+
+# Calcola la media annuale per ogni gruppo
+media_anni = (
+    df_grouped
+    .groupby(["year", "group"])["Birth rate, crude (per 1,000 people)"]
+    .mean()
+    .reset_index()
+)
 
 # Crea il grafico
 grafico = (
-    ggplot(media_annuale, aes(x="year", y="Birth rate, crude (per 1,000 people)")) +
-    geom_line(color="#D81B60", size=1.5) +  # rosa scuro
+    ggplot(media_anni, aes(x="year", y="Birth rate, crude (per 1,000 people)", color="group")) +
+    geom_line(size=1.5) +
+    scale_color_manual(values={
+        "Top 10 High Birth Rate Countries": "#FF69B4",  # rosa
+        "Top 10 Low Birth Rate Countries": "#800080"   # viola
+    }) +
     labs(
-        title="Average Birth Rate Over Time (Selected Countries)",
+        title="Birth Rate Trends: High vs Low Rate Countries",
         x="Year",
-        y="Average Birth Rate (per 1,000 people)"
+        y="Average Birth Rate (per 1,000 people)",
+        color="Country Group"
     ) +
     theme_minimal() +
     theme(
-        plot_title=element_text(size=14, weight='bold'),
-        axis_title=element_text(size=12)
+        plot_title=element_text(size=14, weight='bold', color="#4B0082"),  # viola più scuro
+        axis_title=element_text(size=12),
+        legend_title=element_text(size=11),
+        legend_text=element_text(size=10),
+        figure_size=(8, 6)  # grafico più stretto
     )
 )
 
