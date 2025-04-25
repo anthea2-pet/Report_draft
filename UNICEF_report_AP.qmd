@@ -8,6 +8,8 @@ format:
     theme: sandstone
 execute:
   error: true
+  echo: true
+  eval: true
   engine: python
 ---
 
@@ -124,7 +126,7 @@ fig = px.choropleth(
 
 fig.update_layout(
     coloraxis_colorbar=dict(
-        title="Access (%)",
+        title="Water Access (%)",
         tickformat=".1f"
     )
 )
@@ -132,6 +134,86 @@ fig.update_layout(
 fig.show()
 ```
 
+<p style="font-size: 16px;"> Fortunately, my mother managed to find a healthcare facility and took me there.  
+However, the <span style="color:#007BFF; font-weight:bold;">healthcare facilities with 
+access to basic water services is not the same across the world</span>.  
+The <span style="color:#17A2B8; font-weight:bold; font-style:italic;">lack of access to basic water services</span> means that healthcare facilities are <em>unable to treat children suffering from diarrhoea</em>.
+
+
 ```{python}
-import warnings
-warnings.simplefilter(action='ignore', category=pd.errors.SettingWithCopyWarning)
+import pandas as pd
+from plotnine import ggplot, aes, geom_point, geom_smooth, labs, theme_minimal, theme, element_text
+
+# Carica i dati
+df = pd.read_csv("unicef_metadata_7.csv")
+
+# Filtra per l'anno 2021
+df_2021 = df[df["year"] == 2021]
+
+# Rimuove righe con valori mancanti
+df_2021 = df_2021.dropna(subset=["Birth rate, crude (per 1,000 people)", "Life expectancy at birth, total (years)"])
+
+# Crea il grafico
+grafico = (
+    ggplot(df_2021, aes(
+        x="Birth rate, crude (per 1,000 people)",
+        y="Life expectancy at birth, total (years)"
+    )) 
+    + geom_point(color="#FF80AB", size=2.5)  # viola medio
+    + geom_smooth(method='lm', color="#4B0082", se=False)  # viola scurissimo
+    + labs(
+        title='Demographic patterns: Birth rate & Life expectancy (2021)',
+        x="Birth Rate (per 1,000 people)",
+        y="Life Expectancy (years)"
+    )
+    + theme_minimal()
+    + theme(
+        plot_title=element_text(size=14, weight='bold', ha='center'),
+        axis_title=element_text(size=12)
+    )
+)
+
+grafico
+```
+
+```{python}
+import pandas as pd
+from plotnine import ggplot, aes, geom_line, labs, theme_minimal, theme, element_text
+
+# Carica i dati
+df = pd.read_csv("unicef_metadata_7.csv")
+
+# Lista dei paesi da includere
+paesi = [
+    "Malaysia", "Vietnam", "Peru", "Yemen", "Benin", "Chad", "Togo", "Comoros", "Bangladesh",
+    "Nigeria", "Haiti", "Central African Republic", "Tunisia", "Zimbabwe", "Ghana", "Morocco",
+    "Lesotho", "Madagascar", "Papua New Guinea"
+]
+
+# Filtra i dati
+df_filtered = df[df["country"].isin(paesi)]
+
+# Rimuove righe con valori nulli
+df_filtered = df_filtered.dropna(subset=["Birth rate, crude (per 1,000 people)"])
+
+# Calcola media del birth rate per anno
+media_annuale = df_filtered.groupby("year")["Birth rate, crude (per 1,000 people)"].mean().reset_index()
+
+# Crea il grafico
+grafico = (
+    ggplot(media_annuale, aes(x="year", y="Birth rate, crude (per 1,000 people)")) +
+    geom_line(color="#D81B60", size=1.5) +  # rosa scuro
+    labs(
+        title="Average Birth Rate Over Time (Selected Countries)",
+        x="Year",
+        y="Average Birth Rate (per 1,000 people)"
+    ) +
+    theme_minimal() +
+    theme(
+        plot_title=element_text(size=14, weight='bold'),
+        axis_title=element_text(size=12)
+    )
+)
+
+grafico
+```
