@@ -1,6 +1,6 @@
 ---
 title: "UNICEF REPORT"
-subtitle: "*When Hope Fades:* **_The Story of Najir_**"
+subtitle: "**<span style='color: #1F407A;'>When Hope Fades:</span>** *<span style='color: #1F77B4;'>The Story of Najir</span>*"
 jupyter: python3
 format:
   html:
@@ -15,7 +15,7 @@ execute:
 
 
 **Author**: Anthea Petrillo                      
-**Published**: April 27, 2025
+**Published**: April 26, 2025
 
 ---
 
@@ -27,7 +27,7 @@ execute:
 
 ## Report Objective
 
-<p style="font-size: 16px;"> This report aims to raise awareness about the tragic reality of child **deaths** caused **by diarrhoea** in **children under five**. Although **_preventable and treatable condition_**, it remains one of the **_leading causes of child mortality in many low-income countries_**, where access to healthcare is limited.
+<p style="font-size: 16px;"> This report aims to raise awareness about the tragic reality of <b>child deaths</b> caused by <b><span style="color: #1F407A;">diarrhoea</span></b> in <b>children under the age of five</b>. Although <i><u>preventable and treatable condition</u></i>, it remains one of the <b><i><span style="color: #1F407A;">leading causes of child mortality in many low-income countries</span></i></b>, where access to healthcare is limited.
 
 The narrative voice of this report is that of **Najir**, a **_4-year-old child who tells his story_**: from when he tells his mother he has a stomach ache, to when, despite efforts to find a cure, he sadly does not survive. Although this is a fictional story, it is plausible enough to reflect what happens in *countries with low access to diarrhoea care*, where the inadequacy of healthcare resources is tied to economic and social inequalities.
 
@@ -419,4 +419,85 @@ fig.update_layout(
 )
 
 fig 
+```
+
+```{python}
+import pandas as pd
+import plotly.express as px
+
+# Caricamento dei dati
+df = pd.read_csv('Deaths caused by diarrhoea 2019 (MCEE 2020) (3).csv', 
+                 skiprows=4, 
+                 header=None,
+                 names=['country', 'deaths', 'region', 'coordinates', 'country_full', 'year'])
+
+# Pulizia dei dati
+df['deaths'] = pd.to_numeric(df['deaths'], errors='coerce')  # Converti in numerico
+df = df.dropna(subset=['deaths'])  # Rimuovi righe con valori mancanti
+
+# Mappatura delle regioni per uniformità
+region_mapping = {
+    'Europe and Central Asia': 'Europa & Asia Centrale',
+    'Latin America and Caribbean': 'America Latina & Caraibi',
+    'Middle East and North Africa': 'Medio Oriente & Nord Africa',
+    'East Asia and Pacific': 'Asia Orientale & Pacifico',
+    'Sub-Saharan Africa': 'Africa Sub-Sahariana',
+    'South Asia': 'Asia Meridionale',
+    'North America': 'Nord America'
+}
+
+df['region'] = df['region'].map(region_mapping)
+
+# Creazione dell'istogramma interattivo
+fig = px.histogram(df, 
+                   x="deaths", 
+                   color="region",
+                   nbins=20,
+                   title="Distribuzione delle Morti per Diarrea per Regione (2019)",
+                   labels={"deaths": "Tasso di Mortalità per Diarrea", "count": "Numero di Paesi"},
+                   opacity=0.7,
+                   template="plotly_white",
+                   hover_data=['country'])
+
+# Personalizzazione del grafico
+fig.update_layout(
+    plot_bgcolor='rgba(230,230,230,0.8)',
+    paper_bgcolor='rgba(230,230,230,0.8)',
+    legend=dict(
+        title_text='Regione',
+        orientation="h",
+        yanchor="bottom",
+        y=-0.3,
+        xanchor="center",
+        x=0.5
+    ),
+    xaxis=dict(
+        title="Numero di morti per diarrea (per 100,000 abitanti)",
+        tickmode='linear',
+        dtick=2
+    ),
+    yaxis=dict(
+        title="Conteggio Paesi",
+        dtick=5
+    ),
+    bargap=0.1
+)
+
+# Aggiungi annotazioni
+fig.update_layout(
+    annotations=[
+        dict(
+            x=1,
+            y=-0.25,
+            xref='paper',
+            yref='paper',
+            text='Fonte: MCEE 2020',
+            showarrow=False,
+            xanchor='right'
+        )
+    ]
+)
+
+# Mostra il grafico interattivo
+fig.show()
 ```
