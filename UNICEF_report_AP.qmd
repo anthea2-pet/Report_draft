@@ -562,6 +562,8 @@ fig.show()
 
 <p><strong>Saving children from preventable deaths like diarrhoea requires <span style="background-color:#D6EEFF;">better healthcare access</span> and <span style="background-color:#D6EEFF;">hygiene in vulnerable communities</span>.
 
+Many lives, including mine, could have been saved with better access to healthcare.
+
 Your <span style="background-color:#D6EEFF;">UNICEF donation</span> can <span style="background-color:#D6EEFF;">save lives</span> and <span style="background-color:#D6EEFF;">keep hope alive</span> for those still fighting.</strong></p>
 
 <div style="text-align:center">
