@@ -1,6 +1,8 @@
 ---
 title: "UNICEF REPORT"
-subtitle: "**<span style='color: #1F407A;'>When Hope Fades:</span>** *<span style='color: #1F77B4;'>The Story of Najir</span>*"
+subtitle: |
+  <div style="display: inline; color: #1F407A; font-weight: bold;">When Hope Fades:</div> 
+  <div style="display: inline; color: #1F77B4; font-style: italic;"> The Story of Najir</div>
 jupyter: python3
 format:
   html:
@@ -13,17 +15,13 @@ execute:
   eval: true
 ---
 
-
 **Author**: Anthea Petrillo                      
 **Published**: April 26, 2025
 
----
 
 <div style="text-align: center;">
   <img src="Uniceflogo.png" width="200px">
 </div>
-
----
 
 ## Report Objective
 
@@ -31,7 +29,6 @@ execute:
 
 The <i>narrative voice</i> of this report is that of <b><span style="color: #1F407A;">Najir, a <i>4-year-old child who tells his story</i></span></b>: from when he tells his mother he has a stomach ache, to when, despite efforts to find a cure, he sadly does not survive. Although this is a fictional story, it is plausible enough to reflect what happens in <b><i>countries with low access to diarrhoea care</i></b>, where the inadequacy of healthcare resources is tied to <i>economic and social inequalities</i>.
 
----
 
 ## Data Sources
 
@@ -52,7 +49,7 @@ The <i>narrative voice</i> of this report is that of <b><span style="color: #1F4
 
 Please find the <b><i><span style="color: #1F407A;">Tableau version</span></i></b> of this report [here](https://public.tableau.com/app/profile/anthea.petrillo/viz/ThestoryofNajir_/Dashboard32).
 
----
+
 
 ## <span style="color: #1F407A;"><b>Najir's Story</b></span>
 
@@ -64,11 +61,11 @@ I do not feel well. A sharp pain grips my stomach, and my mother tells me I have
 She holds my hand tightly, her face etched with worry, her eyes filled with silent fear.
 ***<span style="color:#1F407A;">"We must find help,"</span>*** she says. **<span style="background-color:#D6EEFF;">However, seeking medical care is not a simple task.</span>**
 
-<p style="font-size: 16px;"> 
+<p style="font-size: 17px;"> 
 I live in one of the *<span style="color:#1F407A;">nineteen countries</span>* where, according to data collected **between 2017 and 2023**, among all the *children under the age of five suffering from diarrhoea*, **fewer than 40% have access** to _<span style="color:#1F407A;">medical advice or treatment</span>_ at a healthcare facility or from a trained provider.
 </p>
 
----
+
 
 # <span style="color:#1F407A;">Healthcare access for children with diarrhoea</span><em><span style="color:#1F77B4;"> in lowest-access countries</span></em>
 
@@ -110,13 +107,12 @@ bar_chart
 A serious public health crisis is evident: **<span style="color:#1F407A;">limited accessibility and availability of essential healthcare services</span>** in specific areas of the world.
 <br><br>
 Despite being a preventable and treatable condition, **_diarrhoea remains one of the leading causes of child mortality_** in countries where healthcare systems are fragile.
-<br><br>
-According to the **_2021_** data, diarrhoea accounted for <span style="color:#1F407A;">**9% of all deaths in children under 5**</span> - over 1,200 daily, or 440,000 annually.
+<br><br> According to the **_2021_** data, diarrhoea accounted for <span style="color:#1F407A;">**9% of all deaths in children under 5**</span> - over 1,200 daily, or 440,000 annually.
 <br>
 
 <p>The following histogram displays the <span style="color: #1F407A; font-weight: bold; font-style: italic;">global distribution of child diarrheal mortality in 2021</span>. Each <strong>vertical bar</strong> represents a specific mortality rate <span style="color: #1F407A; font-style: italic;">(from 0% to 16%)</span>, while its <strong>height</strong> indicates how many countries fall into that percentage range.</p>
 
-<p>The visualization's strength lies in its <span style="color: #1F407A; font-style: italic;">mosaic composition</span>: each bar is divided into colored segments corresponding to <strong>different regions</strong>, as shown in the provided legend. The structure simultaneously reveals three key insights:</p>
+<p>The structure simultaneously reveals three key insights:</p>
 
 <ul>
 <li><span style="color: #1F407A; font-weight: bold;">Extent of the phenomenon</span> (horizontal position on the scale)</li>
@@ -210,9 +206,22 @@ fig.update_layout(
 fig.show()
 ```
 
-<p>My mother isn't just worried about me, but also about my sisters. In fact, it's not only <span style="color: #1F407A; font-weight: bold; font-style: italic;">boys</span> like me who suffer, but also <span style="color: #CC4178; font-weight: bold; font-style: italic;">girls</span> my same age.</p>
+Based on **__GDP per capita__**, it is possible to identify 10 of the **__richest countries__** in the world and 10 of the **__poorest__**. Among the latter, the percentage of access to treatment for **__diarrhea__** is extremely low, both for <span style="color: #1a365d; font-weight: bold; font-style: italic;">boys like me</span> and for <span style="color: #8B008B; font-weight: bold; font-style: italic;">girls like my sisters</span>.
 
 # <span style="color:#1F407A;">Healthcare access for children with diarrhoea</span><em><span style="color:#1F77B4;"> (top 10 poorest countries)</span></em>
+
+```{python}
+import pandas as pd
+
+df = pd.read_csv('unicef_metadata_7.csv', usecols=['country', 'year', 'GDP per capita (constant 2015 US$)'])
+df = df[(df['year'] == 2022)].dropna()
+
+top10_high = df.nlargest(10, 'GDP per capita (constant 2015 US$)')['country'].tolist()
+top10_low = df.nsmallest(10, 'GDP per capita (constant 2015 US$)')['country'].tolist()
+
+print("Top 10 Highest GDP per Capita in 2022:", top10_high)
+print("Top 10 Lowest GDP per Capita in 2022:", top10_low)
+```
 
 ```{python}
 # Libraries
@@ -282,8 +291,11 @@ fig.update_layout(
 fig.show() 
 ```
 
-<p style="font-size: 16px;"> Fortunately, my mother managed to find a healthcare facility and took me there.  
-However, the <span style="color:#1F407A; font-weight:bold;">percentage of healthcare facilities with
+<p>There is a <strong><em>hospital</em></strong> in the next village, but the <strong><em>water</em></strong> from the tap tastes like <strong><em>dirt</em></strong>. My mother says that <span style="color: #1a365d; font-weight: bold; font-style: italic;">in richer countries, the water runs clear and doctors always have sterile gloves</span>. I've never seen clean water myself, maybe if I had, my stomach wouldn't hurt like this.</p>
+
+<p>When we finally reached the hospital, the doctors just shook their heads. <span style="color: #3a7ca5; font-weight: bold; font-style: italic;">'We don't have basic water services here,'</span> they told us. My mother held me tighter, but there was nothing they could do.</p>
+
+In fact, the <span style="color:#1F407A; font-weight:bold;">percentage of healthcare facilities with
 access to basic water services is not the same across the world</span>.  
 
 The <span style="color:#17A2B8; font-weight:bold; font-style:italic;">lack of access to basic water services</span> means that healthcare facilities are <em>unable to treat children suffering from diarrhoea</em>.
@@ -331,7 +343,10 @@ fig.update_layout(
 fig.show()
 ```
 
+
 <p>In countries like mine, parents often have <span style="color: #1F407A; font-weight: bold; font-style: italic;">large families</span> because they sadly anticipate that some of their children may not survive. This leads to very high birth rates. Since birth rates and life expectancy are <span style="color: #1F407A; font-weight: bold; font-style: italic;">inversely related</span>, <span style="color: #CC4178; font-weight: bold; font-style: italic;">higher birth rates typically correspond to lower life expectancy at birth</span>.</p>
+
+My mother says that in <span style="color: #1a365d; font-weight: bold; font-style: italic;">rich countries</span>, parents have **__few children__** and live long enough to become **__grandparents__**. Here, instead, who knows if I will even grow up to be as old as my **__father__**.
 
 # <span style="color:#1F407A; font-weight: bold;">Demographic patterns (2021): </span><span style="color:#CC4178; font-weight: bold;">Birth rate</span><span style="color:#1F407A; font-weight: bold;"> & </span><span style="color:#CC4178; font-weight: bold;">Life expectancy</span>
 
@@ -381,11 +396,15 @@ fig.update_layout(
 fig.show()
 ```
 
-<h1><strong><span style="color:#1F407A;">Birth Rate Trends</span><span style="color:#1F77B4;">: High vs Low Rate Countries</span></strong></h1>
+
+In the following chart, the disparity in birth rates between the poorest countries (**<span style="color: #FF69B4;">pink</span>** trend line) and the richest countries (**<span style="color: #800080;">purple</span>** trend line) is even more evident.
+
+# **<span style="color: #1F407A;">Birth Rate Trends</span>: <span style="color: #1F77B4;">High vs Low Rate Countries</span>**
+
 
 ```{python}
 import pandas as pd
-from plotnine import ggplot, aes, geom_line, labs, theme_minimal, theme, element_text, scale_color_manual
+from plotnine import ggplot, aes, geom_line, labs, theme_minimal, theme, element_text, element_rect, scale_color_manual
 
 # Carica i dati
 df = pd.read_csv("unicef_metadata_7.csv")
@@ -422,7 +441,7 @@ grafico = (
     geom_line(size=1.5) +
     scale_color_manual(values={
         "Top 10 High Birth Rate Countries": "#FF69B4",  # rosa
-        "Top 10 Low Birth Rate Countries": "#800080"   # viola
+        "Top 10 Low Birth Rate Countries": "#800080"    # viola
     }) +
     labs(
         x="Year",
@@ -431,16 +450,24 @@ grafico = (
     ) +
     theme_minimal() +
     theme(
-        axis_title_x=element_text(color="#1F407A", size=12),  # blu scuro
-        axis_title_y=element_text(color="#1F407A", size=12),  # blu scuro
+        axis_title_x=element_text(color="#1F407A", size=12, weight='bold'),  # grassetto
+        axis_title_y=element_text(color="#1F407A", size=12, weight='bold'),  # grassetto
         legend_title=element_text(size=11),
         legend_text=element_text(size=10),
-        figure_size=(8, 6)  # grafico più stretto
+        figure_size=(8, 6),
+        panel_background=element_rect(fill="#F5FBFF", color=None)  # sfondo azzurro chiarissimo
     )
 )
 
 grafico
 ```
+
+
+In places like mine, where **_wealth is scarce_**, families have many children, not by choice, but because they lack the resources to provide for them.  
+
+In <span style="color: #1a365d; font-weight: bold; font-style: italic;">wealthier countries</span>, parents can afford to care for fewer children, offering them more opportunities and better care. There, families are small and everyone smiles.  
+
+Here, the **_scarcity of resources_** means more children with fewer chances for a long, healthy life. Here, adults say, <span style="color: #1a365d; font-weight: bold; font-style: italic;">"We have many children because the sky will take some of them."</span> But I hope the sky won't take any of us.
 
 <h1><strong><span style="color:#1F407A;">GDP per capita and its effect on</span><span style="color:#1F77B4;"> birth rate</span></strong></h1>
 
@@ -533,36 +560,9 @@ fig.show()
 ```
 
 
-```{python}
-import pandas as pd
+<p><strong>Saving children from preventable deaths like diarrhoea requires <span style="background-color:#D6EEFF;">better healthcare access</span> and <span style="background-color:#D6EEFF;">hygiene in vulnerable communities</span>.
 
-# Carica il file
-df = pd.read_csv('unicef_metadata_7.csv')
-
-# Assicurati che il GDP per capita sia numerico
-df['GDP per capita (constant 2015 US$)'] = pd.to_numeric(df['GDP per capita (constant 2015 US$)'], errors='coerce')
-
-# Filtra solo l'anno 2022
-df_2022 = df[df['year'] == 2022]
-
-# Elimina i valori mancanti di GDP per capita
-df_2022 = df_2022.dropna(subset=['GDP per capita (constant 2015 US$)'])
-
-# Trova i 10 paesi con GDP per capita più alto
-top10_highest_countries = df_2022.sort_values(by='GDP per capita (constant 2015 US$)', ascending=False).head(10)['country'].tolist()
-
-# Trova i 10 paesi con GDP per capita più basso
-top10_lowest_countries = df_2022.sort_values(by='GDP per capita (constant 2015 US$)', ascending=True).head(10)['country'].tolist()
-
-# Stampa solo le liste dei paesi
-print("TOP 10 paesi con GDP per capita più ALTO nel 2022:")
-print(top10_highest_countries)
-
-print("\nTOP 10 paesi con GDP per capita più BASSO nel 2022:")
-print(top10_lowest_countries)
-```
-
-<p><strong>Saving children from preventable deaths like diarrhoea requires <span style="background-color:#D6EEFF;">better healthcare access</span> and <span style="background-color:#D6EEFF;">hygiene in vulnerable communities</span>. Your <span style="background-color:#D6EEFF;">UNICEF donation</span> can <span style="background-color:#D6EEFF;">save lives</span> and <span style="background-color:#D6EEFF;">keep hope alive</span> for those still fighting.</strong></p>
+Your <span style="background-color:#D6EEFF;">UNICEF donation</span> can <span style="background-color:#D6EEFF;">save lives</span> and <span style="background-color:#D6EEFF;">keep hope alive</span> for those still fighting.</strong></p>
 
 <div style="text-align:center">
 <a href="https://donazioni.unicef.it/lp/thatsall?wdgs=GAPM&type=reg&utm_source=google&utm_medium=cpc&utm_campaign=CD_GA_SEA_PLEDGE_maln_GADS_BRAND_noexact_27032024&utm_adgroup=_NO_EXACT_brand_pura&gad_source=1&gclid=Cj0KCQjw4v6-BhDuARIsALprm32xVHM4Ks4EGCzXyslB8_yVRQg-e3E2sGklwtrCPwJkVXWfgZLtOxsaAvKDEALw_wcB#/home" target="_blank">
