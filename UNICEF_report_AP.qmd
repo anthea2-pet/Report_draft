@@ -1,6 +1,7 @@
 ---
 title: "UNICEF REPORT"
 subtitle: "*When Hope Fades:* **_The Story of Najir_**"
+jupyter: python3
 format:
   html:
     embed-resources: true
@@ -10,7 +11,6 @@ execute:
   error: true
   echo: true
   eval: true
-  engine: python
 ---
 
 
@@ -235,4 +235,188 @@ grafico = (
 )
 
 grafico
+```
+
+
+
+```{python}
+import pandas as pd
+import plotly.express as px
+
+# Carica il dataset
+df = pd.read_csv("unicef_metadata_7.csv")
+
+# Filtra i dati per l'anno 2022 e pulisci
+df_2022 = df[df["year"] == 2022]
+df_cleaned = df_2022.dropna(subset=["GDP per capita (constant 2015 US$)", "Birth rate, crude (per 1,000 people)"])
+df_cleaned["Birth rate, crude (per 1,000 people)"] = df_cleaned["Birth rate, crude (per 1,000 people)"].round(1)
+
+# Crea il grafico con le personalizzazioni richieste
+fig = px.scatter(
+    df_cleaned,
+    x="GDP per capita (constant 2015 US$)",
+    y="Birth rate, crude (per 1,000 people)",
+    title="<b>GDP per capita and its effect on birth rate</b>",  # Titolo in grassetto
+    labels={
+        "GDP per capita (constant 2015 US$)": "GDP per capita (USD)",
+        "Birth rate, crude (per 1,000 people)": "Birth rate (per 1,000 people)"
+    },
+    color_discrete_sequence=["#FDB79A"],  # Colore rosa per i punti
+    trendline="lowess",
+    trendline_color_override="#FF69B4"  # Linea viola
+)
+
+# Personalizzazione avanzata
+fig.update_traces(
+    mode='markers',
+    marker=dict(
+        size=8,
+        opacity=0.7,
+        line=dict(width=1, color='DarkSlateGrey')
+    ),
+    selector=dict(mode='markers')
+)
+
+# Migliora l'aspetto della linea di tendenza
+fig.update_traces(
+    line=dict(width=4),
+    selector=dict(type='scatter', mode='lines')
+)
+
+# Aggiorna il layout con le nuove specifiche
+fig.update_layout(
+    title={
+        'text': "<b>GDP per capita and its effect on birth rate</b>",
+        'y':0.9,
+        'x':0.5,
+        'xanchor': 'center',
+        'yanchor': 'top',
+        'font': dict(
+            size=18,
+            color='#800080'  # Titolo viola
+        )
+    },
+    xaxis_title="GDP per capita (USD)",
+    yaxis_title="Birth rate (per 1,000 people)",
+    template="plotly_white",
+    font=dict(
+        family="Arial",
+        size=12,
+        color="black"  # Testo assi in nero
+    ),
+    hovermode="closest",
+    showlegend=False,
+    xaxis=dict(
+        range=[0, 100000],
+        tickvals=[0, 20000, 40000, 60000, 80000, 100000],
+        tickformat=",",
+        title_font=dict(color="black"),  # Asse X in nero
+        tickfont=dict(color="black")
+    ),
+    yaxis=dict(
+        range=[0, 45],
+        tickvals=[0, 5, 10, 15, 20, 25, 30, 35, 40, 45],
+        title_font=dict(color="black"),  # Asse Y in nero
+        tickfont=dict(color="black")
+    )
+)
+
+# Aggiungi annotazione fonte dati
+fig.add_annotation(
+    x=0.5,
+    y=-0.15,
+    xref="paper",
+    yref="paper",
+    text="Fonte: Dati UNICEF 2022",
+    showarrow=False,
+    font=dict(
+        size=10,
+        color="grey"
+    )
+)
+
+fig
+```
+
+
+```{python}
+import pandas as pd
+
+# Carica il file
+df = pd.read_csv('unicef_metadata_7.csv')
+
+# Assicurati che il GDP per capita sia numerico
+df['GDP per capita (constant 2015 US$)'] = pd.to_numeric(df['GDP per capita (constant 2015 US$)'], errors='coerce')
+
+# Filtra solo l'anno 2022
+df_2022 = df[df['year'] == 2022]
+
+# Elimina i valori mancanti di GDP per capita
+df_2022 = df_2022.dropna(subset=['GDP per capita (constant 2015 US$)'])
+
+# Trova i 10 paesi con GDP per capita più alto
+top10_highest_countries = df_2022.sort_values(by='GDP per capita (constant 2015 US$)', ascending=False).head(10)['country'].tolist()
+
+# Trova i 10 paesi con GDP per capita più basso
+top10_lowest_countries = df_2022.sort_values(by='GDP per capita (constant 2015 US$)', ascending=True).head(10)['country'].tolist()
+
+# Stampa solo le liste dei paesi
+print("TOP 10 paesi con GDP per capita più ALTO nel 2022:")
+print(top10_highest_countries)
+
+print("\nTOP 10 paesi con GDP per capita più BASSO nel 2022:")
+print(top10_lowest_countries)
+```
+
+```{python}
+# Libraries
+import pandas as pd
+import plotly.express as px
+
+# Load the dataset
+df = pd.read_csv("unicef_indicator_1 (2).csv")
+
+# Lista dei 10 paesi che ti interessano
+countries_of_interest = [
+    'Burundi', 'Afghanistan', 'Central African Republic', 'Madagascar', 
+    'Somalia', 'Congo, the Democratic Republic of the', 'Malawi', 
+    'Niger', 'Chad', 'Mozambique'
+]
+
+# Filtro il dataset: solo maschi e femmine, e solo i 10 paesi
+df_filtered = df[
+    (df["sex"].isin(["Female", "Male"])) &
+    (df["country"].isin(countries_of_interest))
+]
+
+# Calcolo la media per anno e sesso
+df_grouped = df_filtered.groupby(["time_period", "sex"], as_index=False)["obs_value"].mean()
+
+# Creo il grafico a linee
+fig = px.line(
+    df_grouped,
+    x="time_period",
+    y="obs_value",
+    color="sex",
+    title="<b>Healthcare Access for Children with Diarrhea (Top 10 Poorest Countries)</b>",
+    labels={
+        "time_period": "Year",
+        "obs_value": "Average Value (%)",
+        "sex": "Sex"
+    },
+    color_discrete_map={
+        "Female": "#FF69B4",  # Rosa
+        "Male": "#00BFFF"     # Azzurro
+    }
+)
+
+# Miglioro l'aspetto
+fig.update_traces(mode="lines+markers")  # Linee con pallini
+fig.update_layout(
+    template="plotly_white",
+    xaxis=dict(tickmode="linear"),  # Mostra tutti gli anni
+    yaxis=dict(range=[0, 100])      # Range percentuale 0-100
+)
+
+fig 
 ```
